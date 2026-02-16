@@ -17,7 +17,7 @@ A simple 2D space shooter game built using HTML, CSS, and JavaScript.
 ## 🌍 Play the Game
 Click the link below to play:
 
-https://Robben199.github.io/space-shooter/
+https://Robben199.github.io/SPACE-SHOOTER-GAME/
 
 ## 📌 Features
 - Enemy spawning system
