@@ -3,7 +3,7 @@
 A simple 2D space shooter game built using HTML, CSS, and JavaScript.
 
 ## 🎮 How to Play
-- Use the arrow keys to move your spaceship
+- Use the arrow or A/D keys to move your spaceship
 - Press Space to shoot
 - Destroy as many enemies as possible
 - Avoid enemy bullets and obstacles
