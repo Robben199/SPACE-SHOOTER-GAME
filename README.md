@@ -1,0 +1,34 @@
+# 🚀 Space Shooter Game
+
+A simple 2D space shooter game built using HTML, CSS, and JavaScript.
+
+## 🎮 How to Play
+- Use the arrow keys to move your spaceship
+- Press Space to shoot
+- Destroy as many enemies as possible
+- Avoid enemy bullets and obstacles
+- Get Power-up to help you
+
+## 🛠 Built With
+- HTML
+- CSS
+- JavaScript
+
+## 🌍 Play the Game
+Click the link below to play:
+
+https://Robben199.github.io/space-shooter/
+
+## 📌 Features
+- Enemy spawning system
+- Shooting mechanics
+- Game over screen
+
+## 🚀 Future Improvements
+- New Power-up
+- Pause system
+- Shop
+
+---
+
+Made with ❤️ by Robben199
