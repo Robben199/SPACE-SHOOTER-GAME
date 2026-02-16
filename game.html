@@ -1,0 +1,558 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Space Shooter</title>
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      overflow: hidden;
+      font-family: sans-serif;
+    }
+
+    #menu {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(180deg, #000, #111);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      z-index: 50;
+    }
+    #menu h1 {
+      font-size: 48px;
+      margin-bottom: 30px;
+      text-shadow: 0 0 15px cyan;
+    }
+    .btn {
+      padding: 15px 40px;
+      margin: 10px;
+      font-size: 20px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      background: cyan;
+      color: black;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+    .btn:hover {
+      background: lime;
+      transform: scale(1.1);
+    }
+
+    #game {
+      display: none;
+      position: relative;
+      width: 800px;
+      height: 600px;
+      margin: 0 auto;
+      background: #000;
+      border: 2px solid #fff;
+      overflow: hidden;
+    }
+
+    .player {
+      position: absolute;
+      bottom: 10px;
+      left: 375px;
+      width: 0;
+      height: 0;
+      border-left: 25px solid transparent;
+      border-right: 25px solid transparent;
+      border-bottom: 50px solid white;
+    }
+
+    .enemy {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      background: red;
+      border-radius: 50%;
+    }
+
+    .meteor {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      background: gray;
+      border-radius: 50%;
+    }
+
+    .bullet {
+      position: absolute;
+      width: 5px;
+      height: 20px;
+      background: yellow;
+    }
+
+    .enemy-bullet {
+      position: absolute;
+      width: 5px;
+      height: 15px;
+      background: orange;
+    }
+
+    .powerup {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 30px;
+      font-size: 18px;
+      font-weight: bold;
+      color: black;
+    }
+
+    .explosion {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      pointer-events: none;
+      animation: boom 0.5s ease-out forwards;
+    }
+
+    @keyframes boom {
+      0% { transform: scale(0.5); opacity: 1; background: yellow; }
+      50% { transform: scale(1.5); opacity: 0.8; background: orange; }
+      100% { transform: scale(2); opacity: 0; background: red; }
+    }
+
+    #score, #lives, #high-score {
+      color: white;
+      text-align: center;
+      font-size: 20px;
+      margin: 5px;
+    }
+
+    #music-controls {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 10;
+      background: rgba(0,0,0,0.6);
+      padding: 10px;
+      border-radius: 10px;
+      color: white;
+      font-size: 14px;
+    }
+
+    #music-controls button {
+      font-size: 16px;
+      margin-bottom: 5px;
+      cursor: pointer;
+    }
+
+    #game-over {
+      display:none;
+      position:absolute;
+      top:0;
+      left:0;
+      width:100%;
+      height:100%;
+      background:rgba(0,0,0,0.85);
+      color:white;
+      font-size:32px;
+      text-align:center;
+      padding-top:200px;
+      z-index:20;
+    }
+
+    #game-over button {
+      margin-top:20px;
+      padding:10px 20px;
+      font-size:20px;
+      cursor:pointer;
+      border:none;
+      border-radius:8px;
+    }
+  </style>
+</head>
+<body>
+
+<div id="menu">
+  <h1> SPACE SHOOTER </h1>
+  <button class="btn" onclick="startGame()">Start Game</button>
+  <button class="btn" onclick="alert('Gunakan A/D atau panah kiri/kanan untuk bergerak.\nSpace untuk menembak.\nAmbil power-up untuk bantuan!')">How to Play</button>
+</div>
+
+<audio id="bg-music" loop>
+  <source src="music.mp3" type="audio/mpeg" />
+</audio>
+<audio id="shoot-sound" src="laser.mp3"></audio>
+<audio id="explosion-sound" src="explosion.mp3"></audio>
+
+<div id="music-controls">
+  <button id="toggle-music">?? Music ON</button><br>
+  <label>Volume: <input type="range" min="0" max="1" step="0.01" value="0.3" id="volume-control"></label>
+</div>
+
+<div id="score">Score: 0</div>
+<div id="lives">Lives: 3</div>
+<div id="high-score">High Score: 0</div>
+
+<div id="game">
+  <div class="player" id="player"></div>
+  <div id="game-over">
+    <p id="final-score">Game Over!</p>
+    <button onclick="restartGame()">Restart</button>
+  </div>
+</div>
+
+<script>
+  function startGame() {
+    document.getElementById("menu").style.display = "none";
+    document.getElementById("game").style.display = "block";
+    runGame();
+  }
+
+  function runGame() {
+    const game = document.getElementById('game');
+    const player = document.getElementById('player');
+    const scoreDisplay = document.getElementById('score');
+    const livesDisplay = document.getElementById('lives');
+    const highScoreDisplay = document.getElementById('high-score');
+    const music = document.getElementById('bg-music');
+    const toggleBtn = document.getElementById('toggle-music');
+    const volumeControl = document.getElementById('volume-control');
+
+    let score = 0;
+    let lives = 3;
+    let bullets = [];
+    let enemies = [];
+    let meteors = [];
+    let enemyBullets = [];
+    let powerups = [];
+    let gameOver = false;
+
+    let shieldActive = false;
+    let doubleBulletActive = false;
+
+    let highScore = localStorage.getItem("highScore") || 0;
+    highScoreDisplay.innerText = "High Score: " + highScore;
+
+    let bulletSpeed = 10;
+    let playerX = 375;
+    player.style.left = playerX + 'px';
+
+    let leftPressed = false;
+    let rightPressed = false;
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') leftPressed = true;
+      if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') rightPressed = true;
+      if ((e.key === ' ' || e.key === 'Spacebar') && !gameOver) shootBullet();
+    });
+
+    document.addEventListener('keyup', e => {
+      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') leftPressed = false;
+      if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') rightPressed = false;
+    });
+
+    function startMusic() {
+      music.volume = volumeControl.value;
+      music.play().catch(()=>{});
+      document.removeEventListener('keydown', startMusic);
+      document.removeEventListener('click', startMusic);
+    }
+    document.addEventListener('keydown', startMusic);
+    document.addEventListener('click', startMusic);
+
+    toggleBtn.addEventListener('click', () => {
+      if (music.paused) {
+        music.play();
+        toggleBtn.textContent = 'Music ON';
+      } else {
+        music.pause();
+        toggleBtn.textContent = 'Music OFF';
+      }
+    });
+
+    volumeControl.addEventListener('input', () => {
+      music.volume = volumeControl.value;
+    });
+
+    function isColliding(a, b) {
+      const aRect = a.getBoundingClientRect();
+      const bRect = b.getBoundingClientRect();
+      return !(
+        aRect.top > bRect.bottom ||
+        aRect.bottom < bRect.top ||
+        aRect.left > bRect.right ||
+        aRect.right < bRect.left
+      );
+    }
+
+    function playSound(id) {
+      const s = document.getElementById(id);
+      s.currentTime = 0;
+      s.play();
+    }
+
+    function updatePlayer() {
+      if (gameOver) return;
+      if (leftPressed && playerX > 0) {
+        playerX -= 5;
+        player.style.left = playerX + 'px';
+      }
+      if (rightPressed && playerX < 750) {
+        playerX += 5;
+        player.style.left = playerX + 'px';
+      }
+    }
+
+    function shootBullet() {
+      playSound("shoot-sound");
+      if (doubleBulletActive) {
+        createBullet(playerX + 10);
+        createBullet(playerX + 35);
+      } else {
+        createBullet(playerX + 22);
+      }
+    }
+
+    function createBullet(x) {
+      const bullet = document.createElement('div');
+      bullet.className = 'bullet';
+      bullet.style.left = x + 'px';
+      bullet.style.bottom = '60px';
+      game.appendChild(bullet);
+      bullets.push(bullet);
+    }
+
+    function spawnEnemy() {
+      const enemy = document.createElement('div');
+      enemy.className = 'enemy';
+      enemy.style.left = Math.floor(Math.random() * 760) + 'px';
+      enemy.style.top = '0px';
+      game.appendChild(enemy);
+      enemies.push(enemy);
+    }
+
+    function spawnMeteor() {
+      const meteor = document.createElement('div');
+      meteor.className = 'meteor';
+      meteor.style.left = Math.floor(Math.random() * 750) + 'px';
+      meteor.style.top = '0px';
+      game.appendChild(meteor);
+      meteors.push(meteor);
+    }
+
+    function enemyShoot() {
+      enemies.forEach(enemy => {
+        const bullet = document.createElement('div');
+        bullet.className = 'enemy-bullet';
+        bullet.style.left = (parseInt(enemy.style.left) + 18) + 'px';
+        bullet.style.top = (parseInt(enemy.style.top) + 40) + 'px';
+        game.appendChild(bullet);
+        enemyBullets.push(bullet);
+      });
+    }
+
+    function spawnPowerUp() {
+      const powerup = document.createElement('div');
+      powerup.className = 'powerup';
+      const type = Math.floor(Math.random() * 3);
+      if (type === 0) { powerup.style.background = "lime"; powerup.innerText = "+"; powerup.dataset.type = "life"; }
+      if (type === 1) { powerup.style.background = "cyan"; powerup.innerText = "S"; powerup.dataset.type = "shield"; }
+      if (type === 2) { powerup.style.background = "yellow"; powerup.innerText = "2x"; powerup.dataset.type = "double"; }
+      powerup.style.left = Math.floor(Math.random() * 770) + 'px';
+      powerup.style.top = '0px';
+      game.appendChild(powerup);
+      powerups.push(powerup);
+    }
+
+    function createExplosion(x, y) {
+      const explosion = document.createElement('div');
+      explosion.className = 'explosion';
+      explosion.style.left = x + 'px';
+      explosion.style.top = y + 'px';
+      game.appendChild(explosion);
+      setTimeout(() => explosion.remove(), 500);
+    }
+
+    function updateBullets() {
+      bullets.forEach((bullet, i) => {
+        let bottom = parseInt(bullet.style.bottom);
+        bottom += bulletSpeed;
+        bullet.style.bottom = bottom + 'px';
+        if (bottom > 600) {
+          bullet.remove();
+          bullets.splice(i, 1);
+        }
+      });
+    }
+
+    function updateEnemyBullets() {
+      enemyBullets.forEach((bullet, i) => {
+        let top = parseInt(bullet.style.top);
+        top += 7;
+        bullet.style.top = top + 'px';
+        if (isColliding(bullet, player)) {
+          bullet.remove();
+          enemyBullets.splice(i, 1);
+          if (shieldActive) {
+            shieldActive = false;
+            player.style.borderBottomColor = "white";
+          } else {
+            loseLife();
+          }
+        }
+        if (top > 600) {
+          bullet.remove();
+          enemyBullets.splice(i, 1);
+        }
+      });
+    }
+
+    function updateEnemies() {
+      enemies.forEach((enemy, i) => {
+        let top = parseInt(enemy.style.top);
+        top += 2;
+        enemy.style.top = top + 'px';
+        if (top > 550) {
+          enemy.remove();
+          enemies.splice(i, 1);
+          loseLife();
+        }
+        bullets.forEach((bullet, j) => {
+          if (isColliding(bullet, enemy)) {
+            playSound("explosion-sound");
+            createExplosion(enemy.offsetLeft, enemy.offsetTop);
+            bullet.remove();
+            enemy.remove();
+            bullets.splice(j, 1);
+            enemies.splice(i, 1);
+            score += 10;
+            scoreDisplay.innerText = 'Score: ' + score;
+          }
+        });
+      });
+    }
+
+    function updateMeteors() {
+      meteors.forEach((meteor, i) => {
+        let top = parseInt(meteor.style.top);
+        top += 3;
+        meteor.style.top = top + 'px';
+        if (top > 600) {
+          meteor.remove();
+          meteors.splice(i, 1);
+        }
+        if (isColliding(meteor, player)) {
+          playSound("explosion-sound");
+          createExplosion(meteor.offsetLeft, meteor.offsetTop);
+          meteor.remove();
+          meteors.splice(i, 1);
+          loseLife();
+        }
+        bullets.forEach((bullet, j) => {
+          if (isColliding(bullet, meteor)) {
+            playSound("explosion-sound");
+            createExplosion(meteor.offsetLeft, meteor.offsetTop);
+            bullet.remove();
+            meteor.remove();
+            bullets.splice(j, 1);
+            meteors.splice(i, 1);
+            score += 5;
+            scoreDisplay.innerText = 'Score: ' + score;
+          }
+        });
+      });
+    }
+
+    function updatePowerUps() {
+      powerups.forEach((powerup, i) => {
+        let top = parseInt(powerup.style.top);
+        top += 3;
+        powerup.style.top = top + 'px';
+        if (top > 600) {
+          powerup.remove();
+          powerups.splice(i, 1);
+        }
+        if (isColliding(powerup, player)) {
+          const type = powerup.dataset.type;
+          if (type === "life") { lives++; livesDisplay.innerText = "Lives: " + lives; }
+          if (type === "shield") { shieldActive = true; player.style.borderBottomColor = "cyan"; }
+          if (type === "double") {
+            doubleBulletActive = true;
+            setTimeout(() => doubleBulletActive = false, 7500);
+          }
+          powerup.remove();
+          powerups.splice(i, 1);
+        }
+      });
+    }
+
+    function loseLife() {
+      lives--;
+      livesDisplay.innerText = 'Lives: ' + lives;
+      if (lives <= 0) endGame();
+    }
+
+    function endGame() {
+      gameOver = true;
+      if (score > highScore) {
+        highScore = score;
+        localStorage.setItem("highScore", highScore);
+      }
+      document.getElementById("game-over").style.display = "block";
+      document.getElementById("final-score").innerText = "Game Over! \nFinal Score: " + score;
+      highScoreDisplay.innerText = "High Score: " + highScore;
+    }
+
+    // ? versi restart yang diperbaiki
+    window.restartGame = function() {
+      document.getElementById("game-over").style.display = "none";
+      score = 0;
+      lives = 3;
+      scoreDisplay.innerText = "Score: 0";
+      livesDisplay.innerText = "Lives: 3";
+      gameOver = false;
+
+      bullets.forEach(b => b.remove());
+      enemies.forEach(e => e.remove());
+      meteors.forEach(m => m.remove());
+      enemyBullets.forEach(b => b.remove());
+      powerups.forEach(p => p.remove());
+      bullets = [];
+      enemies = [];
+      meteors = [];
+      enemyBullets = [];
+      powerups = [];
+
+      playerX = 375;
+      player.style.left = playerX + 'px';
+      shieldActive = false;
+      player.style.borderBottomColor = "white";
+    }
+
+    // Main loop
+    setInterval(() => {
+      if (!gameOver) {
+        updatePlayer();
+        updateBullets();
+        updateEnemies();
+        updateMeteors();
+        updateEnemyBullets();
+        updatePowerUps();
+      }
+    }, 30);
+
+    setInterval(() => { if (!gameOver) spawnEnemy(); }, 3000);
+    setInterval(() => { if (!gameOver) enemyShoot(); }, 1500);
+    setInterval(() => { if (!gameOver) spawnPowerUp(); }, 12000);
+    setInterval(() => { if (!gameOver) spawnMeteor(); }, 5000);
+  }
+</script>
+
+</body>
+</html>
