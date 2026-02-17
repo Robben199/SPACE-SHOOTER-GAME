@@ -251,46 +251,41 @@
     // MOBILE TOUCH CONTROL
     // =========================
 
-    let touchStartX = null;
+let touchStartX = null;
 
-    // Swipe kiri kanan
-    game.addEventListener("touchstart", function(e) {
-      touchStartX = e.touches[0].clientX;
-    }, { passive: true });
+game.addEventListener("touchstart", function(e) {
+  touchStartX = e.touches[0].clientX;
 
-    game.addEventListener("touchmove", function(e) {
-      if (touchStartX === null) return;
+  if (!gameOver) {
+    shootBullet(); // tap untuk tembak
+  }
+}, { passive: true });
 
-      let currentX = e.touches[0].clientX;
-      let diff = currentX - touchStartX;
+game.addEventListener("touchmove", function(e) {
+  if (touchStartX === null) return;
 
-      if (diff > 20) {
-        rightPressed = true;
-        leftPressed = false;
-      } 
-      else if (diff < -20) {
-        leftPressed = true;
-        rightPressed = false;
-      }
+  let currentX = e.touches[0].clientX;
+  let diff = currentX - touchStartX;
 
-      touchStartX = currentX;
-      e.preventDefault();
-    }, { passive: false });
+  if (diff > 20) {
+    rightPressed = true;
+    leftPressed = false;
+  } 
+  else if (diff < -20) {
+    leftPressed = true;
+    rightPressed = false;
+  }
 
-    game.addEventListener("touchend", function() {
-      leftPressed = false;
-      rightPressed = false;
-      touchStartX = null;
-    });
+  touchStartX = currentX;
+  e.preventDefault();
+}, { passive: false });
 
-    // Tap untuk menembak
-    game.addEventListener("touchstart", function(e) {
-      if (!gameOver) {
-        shootBullet();
-      }
-    });
-
-
+game.addEventListener("touchend", function() {
+  leftPressed = false;
+  rightPressed = false;
+  touchStartX = null;
+});
+    
     document.addEventListener('keydown', e => {
       if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') leftPressed = true;
       if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') rightPressed = true;
@@ -601,6 +596,7 @@
 
 </body>
 </html>
+
 
 
 
