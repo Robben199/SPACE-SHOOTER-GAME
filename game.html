@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0>
   <title>Space Shooter</title>
   <style>
     body {
@@ -245,6 +246,50 @@
 
     let leftPressed = false;
     let rightPressed = false;
+        
+    // =========================
+    // MOBILE TOUCH CONTROL
+    // =========================
+
+    let touchStartX = null;
+
+    // Swipe kiri kanan
+    game.addEventListener("touchstart", function(e) {
+      touchStartX = e.touches[0].clientX;
+    }, { passive: true });
+
+    game.addEventListener("touchmove", function(e) {
+      if (touchStartX === null) return;
+
+      let currentX = e.touches[0].clientX;
+      let diff = currentX - touchStartX;
+
+      if (diff > 20) {
+        rightPressed = true;
+        leftPressed = false;
+      } 
+      else if (diff < -20) {
+        leftPressed = true;
+        rightPressed = false;
+      }
+
+      touchStartX = currentX;
+      e.preventDefault();
+    }, { passive: false });
+
+    game.addEventListener("touchend", function() {
+      leftPressed = false;
+      rightPressed = false;
+      touchStartX = null;
+    });
+
+    // Tap untuk menembak
+    game.addEventListener("touchstart", function(e) {
+      if (!gameOver) {
+        shootBullet();
+      }
+    });
+
 
     document.addEventListener('keydown', e => {
       if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') leftPressed = true;
@@ -556,4 +601,5 @@
 
 </body>
 </html>
+
 
