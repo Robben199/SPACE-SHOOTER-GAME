@@ -176,6 +176,20 @@
       border:none;
       border-radius:8px;
     }
+
+    #pause-btn {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 30;
+      font-size: 18px;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: rgba(255,255,255,0.8);
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -202,6 +216,7 @@
 <div id="high-score">High Score: 0</div>
 
 <div id="game">
+  <button id="pause-btn">II</button>
   <div class="player" id="player"></div>
   <div id="game-over">
     <p id="final-score">Game Over!</p>
@@ -234,6 +249,7 @@
     let enemyBullets = [];
     let powerups = [];
     let gameOver = false;
+    let paused = false;
 
     let shieldActive = false;
     let doubleBulletActive = false;
@@ -320,6 +336,19 @@ game.addEventListener("touchend", function() {
     volumeControl.addEventListener('input', () => {
       music.volume = volumeControl.value;
     });
+  
+    const pauseBtn = document.getElementById("pause-btn");
+
+pauseBtn.addEventListener("click", () => {
+  paused = !paused;
+
+  if (paused) {
+    pauseBtn.textContent = "▶"; // icon play
+  } else {
+    pauseBtn.textContent = "II";
+  }
+});
+
 
     function isColliding(a, b) {
       const aRect = a.getBoundingClientRect();
@@ -578,7 +607,7 @@ game.addEventListener("touchend", function() {
 
     // Main loop
     setInterval(() => {
-      if (!gameOver) {
+      if (!gameOver && !paused) {
         updatePlayer();
         updateBullets();
         updateEnemies();
@@ -588,15 +617,15 @@ game.addEventListener("touchend", function() {
       }
     }, 30);
 
-    setInterval(() => { if (!gameOver) spawnEnemy(); }, 3000);
-    setInterval(() => { if (!gameOver) enemyShoot(); }, 1500);
-    setInterval(() => { if (!gameOver) spawnPowerUp(); }, 12000);
-    setInterval(() => { if (!gameOver) spawnMeteor(); }, 5000);
+    setInterval(() => { if (!gameOver && !paused) spawnEnemy(); }, 3000);
+    setInterval(() => { if (!gameOver && !paused) spawnPowerUp(); }, 12000);
+    setInterval(() => { if (!gameOver && !paused) spawnMeteor(); }, 5000);
   }
 </script>
 
 </body>
 </html>
+
 
 
 
