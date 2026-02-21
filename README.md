@@ -23,10 +23,11 @@ https://Robben199.github.io/SPACE-SHOOTER-GAME/
 - Enemy spawning system
 - Shooting mechanics
 - Game over screen
+- Pause system
 
 ## 🚀 Future Improvements
 - New Power-up
-- Pause system
+- Settings
 - Shop
 
 ---
