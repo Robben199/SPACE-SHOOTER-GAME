@@ -250,6 +250,7 @@
     let powerups = [];
     let gameOver = false;
     let paused = false;
+    let freezeActive = false;
 
     let shieldActive = false;
     let doubleBulletActive = false;
@@ -430,10 +431,11 @@ pauseBtn.addEventListener("click", () => {
     function spawnPowerUp() {
       const powerup = document.createElement('div');
       powerup.className = 'powerup';
-      const type = Math.floor(Math.random() * 3);
+      const type = Math.floor(Math.random() * 4);
       if (type === 0) { powerup.style.background = "lime"; powerup.innerText = "+"; powerup.dataset.type = "life"; }
       if (type === 1) { powerup.style.background = "cyan"; powerup.innerText = "S"; powerup.dataset.type = "shield"; }
       if (type === 2) { powerup.style.background = "yellow"; powerup.innerText = "2x"; powerup.dataset.type = "double"; }
+      if (type === 3) { powerup.style.background = "aqua"; powerup.innerText = "❄"; powerup.dataset.type = "freeze"; }
       powerup.style.left = Math.floor(Math.random() * 770) + 'px';
       powerup.style.top = '0px';
       game.appendChild(powerup);
@@ -462,6 +464,7 @@ pauseBtn.addEventListener("click", () => {
     }
 
     function updateEnemyBullets() {
+      if (freezeActive) return;
       enemyBullets.forEach((bullet, i) => {
         let top = parseInt(bullet.style.top);
         top += 7;
@@ -484,6 +487,7 @@ pauseBtn.addEventListener("click", () => {
     }
 
     function updateEnemies() {
+      if (freezeActive) return;
       enemies.forEach((enemy, i) => {
         let top = parseInt(enemy.style.top);
         top += 2;
@@ -509,6 +513,7 @@ pauseBtn.addEventListener("click", () => {
     }
 
     function updateMeteors() {
+      if (freezeActive) return;
       meteors.forEach((meteor, i) => {
         let top = parseInt(meteor.style.top);
         top += 3;
@@ -540,6 +545,7 @@ pauseBtn.addEventListener("click", () => {
     }
 
     function updatePowerUps() {
+      if (freezeActive) return;
       powerups.forEach((powerup, i) => {
         let top = parseInt(powerup.style.top);
         top += 3;
@@ -555,6 +561,12 @@ pauseBtn.addEventListener("click", () => {
           if (type === "double") {
             doubleBulletActive = true;
             setTimeout(() => doubleBulletActive = false, 7500);
+          if (type === "freeze") {
+            freezeActive = true;
+
+            setTimeout(() => {
+              freezeActive = false;
+            }, 5000);
           }
           powerup.remove();
           powerups.splice(i, 1);
@@ -617,15 +629,16 @@ pauseBtn.addEventListener("click", () => {
       }
     }, 30);
 
-    setInterval(() => { if (!gameOver && !paused) spawnEnemy(); }, 3000);
-    setInterval(() => { if (!gameOver && !paused) enemyShoot(); }, 1500);
-    setInterval(() => { if (!gameOver && !paused) spawnPowerUp(); }, 12000);
-    setInterval(() => { if (!gameOver && !paused) spawnMeteor(); }, 5000);
+    setInterval(() => { if (!gameOver && !paused && !freezeActive) spawnEnemy(); }, 3000);
+    setInterval(() => { if (!gameOver && !paused && !freezeActive) enemyShoot(); }, 1500);
+    setInterval(() => { if (!gameOver && !paused && !freezeActive) spawnPowerUp(); }, 12000);
+    setInterval(() => { if (!gameOver && !paused && !freezeActive) spawnMeteor(); }, 5000);
   }
 </script>
 
 </body>
 </html>
+
 
 
 
