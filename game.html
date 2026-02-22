@@ -513,11 +513,11 @@ pauseBtn.addEventListener("click", () => {
     }
 
     function updateMeteors() {
-      if (freezeActive) return;
       meteors.forEach((meteor, i) => {
         let top = parseInt(meteor.style.top);
+        if (!freezeActive) {
         top += 3;
-        meteor.style.top = top + 'px';
+        meteor.style.top = top + 'px'; }
         if (top > 600) {
           meteor.remove();
           meteors.splice(i, 1);
@@ -638,6 +638,7 @@ pauseBtn.addEventListener("click", () => {
 
 </body>
 </html>
+
 
 
 
