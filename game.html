@@ -487,11 +487,11 @@ pauseBtn.addEventListener("click", () => {
     }
 
     function updateEnemies() {
-      if (freezeActive) return;
       enemies.forEach((enemy, i) => {
         let top = parseInt(enemy.style.top);
+        if (!freezeActive) {
         top += 2;
-        enemy.style.top = top + 'px';
+        enemy.style.top = top + 'px'; }
         if (top > 550) {
           enemy.remove();
           enemies.splice(i, 1);
@@ -638,6 +638,7 @@ pauseBtn.addEventListener("click", () => {
 
 </body>
 </html>
+
 
 
 
