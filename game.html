@@ -215,6 +215,7 @@
 </audio>
 <audio id="shoot-sound" src="laser.mp3"></audio>
 <audio id="explosion-sound" src="explosion.mp3"></audio>
+<audio id="freeze-sound" src="freeze.mp3"></audio>
 
 <div id="music-controls">
   <button id="toggle-music">?? Music ON</button><br>
@@ -575,11 +576,29 @@ pauseBtn.addEventListener("click", () => {
           if (type === "freeze") {
             freezeActive = true;
 
-            document.getElementById("freeze-overlay").style.opacity = "1" ;
-            
+            const bgm = document.getElementById("bg-music");
+            const freezeSound = document.getElementById("freeze-sound");
+            const overlay = document.getElementById("freeze-overlay");
+
+            // Pause music utama
+            bgm.pause();
+
+            // Play sound freeze
+            freezeSound.currentTime = 0;
+            freezeSound.play();
+
+            // Aktifkan overlay biru
+            overlay.style.opacity = "1";
+
             setTimeout(() => {
               freezeActive = false;
-              document.getElementById("freeze-overlay").style.opacity = "0" ;
+
+              // Matikan overlay
+              overlay.style.opacity = "0";
+
+              // Lanjutkan music utama
+              bgm.play();
+
             }, 5000);
           }
           powerup.remove();
@@ -652,6 +671,7 @@ pauseBtn.addEventListener("click", () => {
 
 </body>
 </html>
+
 
 
 
