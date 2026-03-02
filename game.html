@@ -216,7 +216,7 @@
       top: 118px;
       font-size: 20px;
       font-weight: bold;
-      color: black;
+      color: white;
     }
   </style>
 </head>
@@ -287,7 +287,6 @@
     let comboCount = 0;
     let comboTimer = 0;
     const comboMaxTime = 5000;
-    document.getElementById("combo-number").innerText = "";
 
     let shieldActive = false;
     let doubleBulletActive = false;
@@ -726,6 +725,7 @@ pauseBtn.addEventListener("click", () => {
           if (comboTimer <= 0) {
             comboTimer = 0;
             comboCount = 0;
+            document.getElementById("combo-number").innerText = "";
           }
 
           updateComboCircle();
@@ -742,6 +742,7 @@ pauseBtn.addEventListener("click", () => {
 
 </body>
 </html>
+
 
 
 
