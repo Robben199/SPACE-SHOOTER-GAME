@@ -216,7 +216,7 @@
       top: 118px;
       font-size: 20px;
       font-weight: bold;
-      color: orange;
+      color: black;
     }
   </style>
 </head>
@@ -287,6 +287,7 @@
     let comboCount = 0;
     let comboTimer = 0;
     const comboMaxTime = 5000;
+    document.getElementById("combo-number").innerText = "";
 
     let shieldActive = false;
     let doubleBulletActive = false;
@@ -741,6 +742,7 @@ pauseBtn.addEventListener("click", () => {
 
 </body>
 </html>
+
 
 
 
