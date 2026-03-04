@@ -1,3 +1,4 @@
+
 <!DOCTYPE html> 
 <html lang="en">
 <head>
@@ -145,7 +146,6 @@
       border-radius: 10px;
       color: white;
       font-size: 14px;
-      text-align: center;
     }
 
     #music-controls button {
@@ -201,29 +201,23 @@
       opacity: 0;
       transition: opacity 0.4s ease;
     }
-
-    #combo-wrapper {
-      position: relative;
+    #combo-circle {
+      position: absolute;
+      right: 20px;
+      top: 100px;
       width: 60px;
       height: 60px;
-      margin: 10px auto 0 auto;
-    }
-
-    #combo-circle {
-      width: 50px;
-      height: 50px;
       border-radius: 50%;
       background: conic-gradient(orange 0deg, transparent 0deg);
     }
 
     #combo-number {
-      position: absolute; 
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 18px;
+      position: absolute;
+      right: 38px;
+      top: 118px;
+      font-size: 20px;
       font-weight: bold;
-      color: white;
+      color: orange;
     }
   </style>
 </head>
@@ -245,8 +239,6 @@
 <div id="music-controls">
   <button id="toggle-music">?? Music ON</button><br>
   <label>Volume: <input type="range" min="0" max="1" step="0.01" value="0.3" id="volume-control"></label>
-  <div id="combo-number"></div>
-  <div id="combo-circle"></div>
 </div>
 
 <div id="score">Score: 0</div>
@@ -257,6 +249,8 @@
   <button id="pause-btn">II</button>
   <div class="player" id="player"></div>
   <div id="freeze-overlay"></div>
+  <div id="combo-circle"></div>
+  <div id="combo-number"></div>
   <div id="game-over">
     <p id="final-score">Game Over!</p>
     <button onclick="restartGame()">Restart</button>
@@ -732,7 +726,6 @@ pauseBtn.addEventListener("click", () => {
           if (comboTimer <= 0) {
             comboTimer = 0;
             comboCount = 0;
-            document.getElementById("combo-number").innerText = "";
           }
 
           updateComboCircle();
@@ -749,17 +742,3 @@ pauseBtn.addEventListener("click", () => {
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
