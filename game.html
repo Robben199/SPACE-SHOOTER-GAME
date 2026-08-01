@@ -744,4 +744,9 @@ pauseBtn.addEventListener("click", () => {
     setInterval(() => { if (!gameOver && !paused && !freezeActive) spawnEnemy(); }, 3000);
     setInterval(() => { if (!gameOver && !paused && !freezeActive) enemyShoot(); }, 1500);
     setInterval(() => { if (!gameOver && !paused && !freezeActive) spawnPowerUp(); }, 12000);
-    setInterval(() => 
+    setInterval(() => { if (!gameOver && !paused && !freezeActive) spawnMeteor(); }, 5000);
+  }
+</script>
+
+</body>
+</html>
