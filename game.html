@@ -203,25 +203,28 @@
       transition: opacity 0.4s ease;
     }
 
+    #combo-wrapper {
+      position: relative;
+      width: 60px;
+      height: 60px;
+      margin: 10px auto 0 auto;
+    }
+
     #combo-circle {
-      position: absolute;
-      right: 20px;
-      top: 100px;
       width: 60px;
       height: 60px;
       border-radius: 50%;
       background: conic-gradient(orange 0deg, transparent 0deg);
-      z-index: 1;
     }
 
     #combo-number {
-      position: absolute;
-      right: 38px;
-      top: 118px;
-      font-size: 20px;
+      position: absolute; 
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 18px;
       font-weight: bold;
       color: white;
-      z-index: 2;
     }
   </style>
 </head>
@@ -741,10 +744,4 @@ pauseBtn.addEventListener("click", () => {
     setInterval(() => { if (!gameOver && !paused && !freezeActive) spawnEnemy(); }, 3000);
     setInterval(() => { if (!gameOver && !paused && !freezeActive) enemyShoot(); }, 1500);
     setInterval(() => { if (!gameOver && !paused && !freezeActive) spawnPowerUp(); }, 12000);
-    setInterval(() => { if (!gameOver && !paused && !freezeActive) spawnMeteor(); }, 5000);
-  }
-</script>
-
-</body>
-</html>
-
+    setInterval(() => 
