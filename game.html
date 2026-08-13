@@ -429,6 +429,14 @@ pauseBtn.addEventListener("click", () => {
   }
 });
 
+    const resumeBtn = document.querySelector("#pause-menu .pause-btn");
+
+resumeBtn.addEventListener("click", () => {
+  paused = false;
+  pauseMenu.style.display = "none";
+  pauseBtn.textContent = "II";
+});
+
 
     function isColliding(a, b) {
       const aRect = a.getBoundingClientRect();
