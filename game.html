@@ -418,11 +418,11 @@ pauseBtn.addEventListener("click", () => {
     function updatePlayer() {
       if (gameOver) return;
       if (leftPressed && playerX > 0) {
-        playerX -= 5;
+        playerX -= 8;
         player.style.left = playerX + 'px';
       }
       if (rightPressed && playerX < 750) {
-        playerX += 5;
+        playerX += 8;
         player.style.left = playerX + 'px';
       }
     }
