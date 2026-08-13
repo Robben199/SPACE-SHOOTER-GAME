@@ -179,6 +179,28 @@
       border-radius:8px;
     }
 
+    #pause-menu {
+     display: none;
+     position: absolute;
+     top: 50%;
+     left: 50%;
+     transform: translate(-50%, -50%);
+     width: 350px;
+     padding: 30px;
+     background: rgba(10, 10, 20, 0.95);
+     border: 2px solid cyan;
+     border-radius: 15px;
+     color: white;
+     text-align: center;
+     z-index: 40;
+     box-shadow: 0 0 25px cyan;
+    }
+
+    #pause-menu h2 {
+     margin-top: 0;
+     font-size: 32px;
+    }
+
     #pause-btn {
       position: absolute;
       top: 10px;
@@ -259,6 +281,13 @@
 
 <div id="game">
   <button id="pause-btn">II</button>
+  <div id="pause-menu">
+  <h2>PAUSED</h2>
+
+    <button class="pause-btn">Resume</button>
+    <button class="pause-btn">Main Menu</button>
+    <button class="pause-btn">Exit</button>
+  </div>
   <div class="player" id="player"></div>
   <div id="freeze-overlay"></div>
   <div id="game-over">
@@ -386,14 +415,17 @@ game.addEventListener("touchend", function() {
     });
   
     const pauseBtn = document.getElementById("pause-btn");
+    const pauseMenu = document.getElementById("pause-menu");
 
 pauseBtn.addEventListener("click", () => {
   paused = !paused;
 
   if (paused) {
-    pauseBtn.textContent = "▶"; // icon play
+    pauseBtn.textContent = "▶";
+    pauseMenu.style.display = "block";
   } else {
     pauseBtn.textContent = "II";
+    pauseMenu.style.display = "none";
   }
 });
 
